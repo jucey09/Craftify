@@ -1,6 +1,6 @@
 name: Craftify
 version: '1.0'
 main: org.powell.craftify.Craftify
-api-version: '1.21.4'
+api-version: '1.21'
 commands:
   craftify:
