@@ -29,7 +29,6 @@ private YamlConfiguration config;
         craftifyListener = new CraftifyListener(this, file, config);
 
         try {
-            loadConfig("recipes.json", main);
             loadConfig("recipes.yml", main);
         } catch (Exception e) {
             e.printStackTrace();
@@ -50,18 +49,6 @@ private YamlConfiguration config;
         config = YamlConfiguration.loadConfiguration(file);
         if (!file.exists()){
             file.createNewFile();
-        }
-        Data data = new Data(craftifyListener.getKey(), craftifyListener.ingredient(), craftifyListener.output());
-        try {
-            Gson gson = new Gson();
-            Writer writer = new FileWriter(file, false);
-            gson.toJson(data, writer);
-            writer.flush();
-            writer.close();
-            System.out.println("Saved Data!");
-
-        } catch (IOException e) {
-            e.printStackTrace();
         }
 
     }
