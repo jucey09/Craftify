@@ -109,7 +109,10 @@ public class CraftifyListener implements Listener {
                                 config = YamlConfiguration.loadConfiguration(file);
 
                                 Bukkit.addRecipe(recipe);
-                                config.set("Crafting_Recipes.recipes." + recipe.getKey(), recipe.getShape());
+                                System.out.println();
+                                System.out.println(recipe.getKey());
+                                System.out.println();
+                                config.set("Crafting_Recipes.recipes." + recipe.getKey() + ".shape", recipe.getShape());
                                 config.set("Crafting_Recipes.recipes." + recipe.getKey() + ".ingredient", recipe.getIngredientMap());
                                 config.set("Crafting_Recipes.recipes." + recipe.getKey() + ".output", item.getType().toString());
 
