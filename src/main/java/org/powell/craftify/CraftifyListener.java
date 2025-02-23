@@ -19,24 +19,20 @@ public class CraftifyListener implements Listener {
     private File file;
     private Craftify main;
     private YamlConfiguration config;
-
-    private String key;
-    private String ingredient;
-    private String output;
+    private NamespacedKey key;
 
     public CraftifyListener(Craftify main, File file, YamlConfiguration config) {
         this.main = main;
         this.file = file;
         this.config = config;
 
-        key = main.getConfig().getConfigurationSection("Crafting_Recipes.recipes").getKeys(false).toString();
-        ingredient = config.getString("Crafting_Recipes.recipes." + key + ".ingredient");
-        output = config.getString("Crafting_Recipes.recipes." + key + ".output");
+        key = NamespacedKey.randomKey();
+
     }
 
     @EventHandler
     public void onInventoryClick(InventoryClickEvent e) {
-
+        String cleanedKey = key.getKey().replace("bukkit:", "");
         if (e.getView().getTitle().equals(ChatColor.DARK_AQUA + "Craftify Menu") && e.getCurrentItem() != null) {
             Player player = (Player) e.getWhoClicked();
             switch (e.getRawSlot()) {
@@ -48,74 +44,32 @@ public class CraftifyListener implements Listener {
                     ItemStack[] contents = e.getInventory().getContents();
                     ItemStack item = contents[24];
                     if (item != null) {
-                        Random rand = new Random();
-                        int craft = rand.nextInt(1000000001);
-                        ShapedRecipe recipe = new ShapedRecipe(new NamespacedKey(main, "craft" + craft), item);
-                            if (contents[10] != null) { recipe.setIngredient('A', contents[10].getType()); } else {
-                                recipe.shape(
-                                        " BC",
-                                        "DEF",
-                                        "GHI");
-                            }
-                            if (contents[11] != null) { recipe.setIngredient('B', contents[11].getType()); } else {
-                                recipe.shape(
-                                        "A C",
-                                        "DEF",
-                                        "GHI");
-                            }
-                            if (contents[12] != null) { recipe.setIngredient('C', contents[12].getType()); } else {
-                                recipe.shape(
-                                        "AB ",
-                                        "DEF",
-                                        "GHI");
-                            }
-                            if (contents[19] != null) { recipe.setIngredient('D', contents[19].getType()); } else {
-                                recipe.shape(
-                                        "ABC",
-                                        " EF",
-                                        "GHI");
-                            }
-                            if (contents[20] != null) { recipe.setIngredient('E', contents[20].getType()); } else {
-                                recipe.shape(
-                                        "ABC",
-                                        "D F",
-                                        "GHI");
-                            }
-                            if (contents[21] != null) { recipe.setIngredient('F', contents[21].getType()); } else {
-                                recipe.shape(
-                                        "ABC",
-                                        "DE ",
-                                        "GHI");
-                            }
-                            if (contents[28] != null) { recipe.setIngredient('G', contents[28].getType()); } else {
-                                recipe.shape(
-                                        "ABC",
-                                        "DEF",
-                                        " HI");
-                            }
-                            if (contents[29] != null) { recipe.setIngredient('H', contents[29].getType()); } else {
-                                recipe.shape(
-                                        "ABC",
-                                        "DEF",
-                                        "G I");
-                            }
-                            if (contents[30] != null) { recipe.setIngredient('I', contents[30].getType()); } else {
-                                recipe.shape(
-                                        "ABC",
-                                        "DEF",
-                                        "GH ");
-                        }
+                        ShapedRecipe recipe = new ShapedRecipe(key, item);
+                        recipe.shape(
+                                "ABC",
+                                "DEF",
+                                "GHI");
+                            if (contents[10] != null) { recipe.setIngredient('A', contents[10].getType()); }
+                            if (contents[11] != null) { recipe.setIngredient('B', contents[11].getType()); }
+                            if (contents[12] != null) { recipe.setIngredient('C', contents[12].getType()); }
+                            if (contents[19] != null) { recipe.setIngredient('D', contents[19].getType()); }
+                            if (contents[20] != null) { recipe.setIngredient('E', contents[20].getType()); }
+                            if (contents[21] != null) { recipe.setIngredient('F', contents[21].getType()); }
+                            if (contents[28] != null) { recipe.setIngredient('G', contents[28].getType()); }
+                            if (contents[29] != null) { recipe.setIngredient('H', contents[29].getType()); }
+                            if (contents[30] != null) { recipe.setIngredient('I', contents[30].getType()); }
                             try {
                                 config = YamlConfiguration.loadConfiguration(file);
 
                                 Bukkit.addRecipe(recipe);
-                                System.out.println();
-                                System.out.println(recipe.getKey());
-                                System.out.println();
-                                config.set("Crafting_Recipes.recipes." + recipe.getKey() + ".shape", recipe.getShape());
-                                config.set("Crafting_Recipes.recipes." + recipe.getKey() + ".ingredient", recipe.getIngredientMap());
-                                config.set("Crafting_Recipes.recipes." + recipe.getKey() + ".output", item.getType().toString());
+                                System.out.println(key);
 
+                                config.set("Crafting_Recipes." + cleanedKey + ".shape", recipe.getShape());
+                                config.set("Crafting_Recipes." + cleanedKey + ".ingredient", recipe.getIngredientMap());
+                                config.set("Crafting_Recipes." + cleanedKey + ".output", item.getType().toString());
+                                for (Player p : Bukkit.getOnlinePlayers()){
+                                    p.discoverRecipe(key);
+                                }
                                 try {
                                     config.save(file);
                                 } catch (IOException i) {
@@ -138,7 +92,4 @@ public class CraftifyListener implements Listener {
         }
     }
 
-    public String getKey() { return key; }
-    public String ingredient() { return ingredient; }
-    public String output() { return output; }
 }

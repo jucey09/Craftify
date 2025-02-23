@@ -4,3 +4,4 @@ main: org.powell.craftify.Craftify
 api-version: '1.21'
 commands:
   craftify:
+  clr:
