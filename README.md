@@ -1,4 +1,5 @@
-Description:
+DESCRIPTION:
+
 Craftify is a Minecraft Spigot plugin that allows server owners to create custom crafting recipes with unique ingredients, enchantments, and item metadata. It supports custom item names, enchantments, and shaped crafting recipes and incorporates them into the game allowing everyone to accses them instantly.
 
 FEATURES:
